@@ -114,11 +114,16 @@ def list_image_tags(name): # le nom de l'image
     curs = conn.cursor()
 
     query_select_image_id = curs.execute("SELECT id FROM images WHERE name='"+name+"'").fetchall()
+
+    if query_select_image_id == []:
+        return "Cette image n'existe pas !"
+
     image_id = query_select_image_id[0][0] # OK
 
     query_all_tag_id = curs.execute("SELECT tag_id FROM image_tags WHERE image_id ='"+str(image_id)+"'").fetchall()
 
-    # return jsonify(query_all_tag_id) # [[1],[2]]
+    if query_all_tag_id == []:
+        return "Cette image ne possède aucun tag !"
 
     list_tag_id = []
     for tag_id in query_all_tag_id:
@@ -139,9 +144,15 @@ def list_tagged_images(name): # le nom d'un tag
     curs = conn.cursor()
     if request.method == "GET":
         query_get_tag_name_id = curs.execute("SELECT id FROM tags WHERE name='"+name+"'").fetchall()
+        if query_get_tag_name_id == []:
+            return "Ce tag n'existe pas !"
+            
         tag_name_id = query_get_tag_name_id[0][0]
 
         query_select_image_id = curs.execute("SELECT image_id FROM image_tags where tag_id='"+str(tag_name_id)+"'").fetchall() # toutes les images (iddes images) ayant le tag
+
+        if query_select_image_id == []:
+            return "Aucune image ne possède ce tag !"
 
         list_image_id = []
         for image_id in query_select_image_id:
@@ -240,12 +251,4 @@ if __name__ == '__main__':
 
 # Si on récup de la donnée depuis une reqûete :
 => request.args.get("name")
-
-import os.path
-from os import path
-
-path.exists("db.sqlite3")
-
-file = open("db.sqlite3", "w") 
-file.close() 
 """

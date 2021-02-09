@@ -30,3 +30,7 @@ http://127.0.0.1:5000//list-tagged-images/<name> # example : "GET /list-tagged-i
 Autres reqûetes de collections disponibles :
 
 http://127.0.0.1:5000//create-collection # example : "POST /create-collection?name=fish HTTP/1.1"
+
+http://127.0.0.1:5000//add-image-in-collection # en développement : "POST /add-image-in-collection?image-name=photo&collection-name=fish HTTP/1.1"
+
+http://127.0.0.1:5000//remove-image-from-collection # en développement : "DELETE /remove-image-from-collection?image-name=photo&collection-name=fish HTTP/1.1"

@@ -181,14 +181,38 @@ def create_collection():
 
 @app.route('/add-image-in-collection', methods=['POST'])
 def add_image_in_collection():
+    """
+    # TODO Ajouter une image dans une collection,
+    L'image doit exister, la collection également, # OK
+    L'image ne doit pas être déjà présente dans la collection # OK
+    """
     conn = sqlite3.connect('db.sqlite3')
     curs = conn.cursor()
     if request.method == "POST":
-        pass
+        image_name = request.args.get("image-name") # => chercher l'id de l'image
+        collection_name = request.args.get("collection-name") # => chercher l'id de la collection
 
-@app.route('/remove-image-from-collection', methods=['POST'])
+        image_id = curs.execute("SELECT id FROM images WHERE name='"+image_name+"'").fetchall()
+        collection_id = curs.execute("SELECT id FROM collections WHERE name='"+collection_name+"'").fetchall()
+
+        if image_id != [] and collection_id != []: # check if image and collection exists or not
+            query_check_if_image_is_in_the_collection = curs.execute("SELECT image_id FROM images_collection WHERE image_id='"+str(image_id)+"'").fetchall()
+            if query_check_if_image_is_in_the_collection == []:
+                # return "L'image ne fait pas parti de la collection et pourra être ajouté !"
+                query_add = curs.execute("INSERT INTO images_collection(image_id, collection_id) VALUES ('"+str(image_id)+"', '"+str(collection_id)+"') ")
+                return "L'image a été ajouté dans la collection !"
+            else:
+                return "L'image est déjà présente dans la collection ! "
+        else:
+            return "L'image ou la collection n'existe pas !"
+
+@app.route('/remove-image-from-collection', methods=['DELETE'])
 def remove_image_from_collection():
-    pass
+    """
+    Supprimer une image d'une collection
+    """
+    if request.method == "DELETE": # => DROP COLUMN
+        pass
 
 @app.route('/not_found', methods=['GET'])
 def not_found():
@@ -247,10 +271,10 @@ def setup_database(): # OK
     # Création de la table images_collection (id, name, collection d'images)
     curs.execute("""CREATE TABLE IF NOT EXISTS images_collection(
         id INTEGER PRIMARY KEY,
-        collection_name TEXT,
+        collection_id INTEGER,
         image_id INTEGER,
         FOREIGN KEY(image_id) REFERENCES images(id),
-        FOREIGN KEY(collection_name) REFERENCES collections(name)
+        FOREIGN KEY(collection_id) REFERENCES collections(id)
         )"""
     )   
 

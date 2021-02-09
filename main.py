@@ -1,10 +1,8 @@
-from flask import Flask, render_template, jsonify, request
-import requests
+from flask import Flask, jsonify, request
 import os
-import os.path
 from os import system, path
 import sqlite3
-from sqlite3 import Error
+# from sqlite3 import Error
 
 app = Flask(__name__)
 
@@ -164,6 +162,34 @@ def list_tagged_images(name): # le nom d'un tag
 
         return jsonify(list_image_name)
         
+@app.route('/create-collection', methods=['POST']) # example : "POST /create-collection?name=fish HTTP/1.1" OK
+def create_collection():
+    """
+    Je créer une collection d'images si celle-ci n'existe pas
+    """
+    conn = sqlite3.connect('db.sqlite3')
+    curs = conn.cursor()
+    if request.method == "POST":
+        name = request.args.get("name")
+        query_check_if_exist = curs.execute("SELECT name FROM collections WHERE name='"+name+"'")
+        if query_check_if_exist.fetchall() != []:
+            return "Ce nom est déjà prit !"
+        
+        curs.execute("INSERT INTO collections(name) VALUES('"+name+"')")
+        conn.commit() # sauvegarde de la transaction
+        return "La collection a bien été enregistré !" 
+
+@app.route('/add-image-in-collection', methods=['POST'])
+def add_image_in_collection():
+    conn = sqlite3.connect('db.sqlite3')
+    curs = conn.cursor()
+    if request.method == "POST":
+        pass
+
+@app.route('/remove-image-from-collection', methods=['POST'])
+def remove_image_from_collection():
+    pass
+
 @app.route('/not_found', methods=['GET'])
 def not_found():
     return jsonify(message='That resource was not found'), 404

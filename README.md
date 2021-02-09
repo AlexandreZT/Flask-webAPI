@@ -28,3 +28,5 @@ http://127.0.0.1:5000//list-image-tags/<name> # example : "GET /list-image-tags/
 http://127.0.0.1:5000//list-tagged-images/<name> # example : "GET /list-tagged-images/dog HTTP/1.1"
 
 Autres reqûetes de collections disponibles :
+
+http://127.0.0.1:5000//create-collection # example : "POST /create-collection?name=fish HTTP/1.1"

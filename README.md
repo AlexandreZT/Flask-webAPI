@@ -1,4 +1,4 @@
-# Monk API
+# Flask-webAPI
 Pour lancer le programme vous devez disposez de python : https://www.python.org/downloads/
 et du package flask : pip install flask.
 
